@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: car-ui
+  namespace: car
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: car-ui
+  template:
+    metadata:
+      labels:
+        app: car-ui
+    spec:
+      containers:
+        - name: car-ui
+          image: lukaskellerstein/car-ui:0.0.2
+          env:
+            - name: PORT
+              value: "5000"
+            - name: API_URL
+              value: "car-api"
+            - name: API_PORT
+              value: "8000"
+          ports:
+            - containerPort: 5000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: car-ui
+  namespace: car
+spec:
+  selector:
+    app: car-ui
+  ports:
+    - protocol: TCP
+      port: 5000
+      targetPort: 5000
+---
+# ------------------------------
+# Traefik configuration
+# ------------------------------
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: strip-cars-prefix
+  namespace: car
+spec:
+  stripPrefix:
+    prefixes:
+      - /cars
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: car-ui-ingressroute
+  namespace: car
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: PathPrefix(`/cars`)
+      kind: Rule
+      services:
+        - name: car-ui
+          port: 5000
+      middlewares:
+        - name: strip-cars-prefix
+          namespace: car

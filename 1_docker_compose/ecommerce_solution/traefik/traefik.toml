@@ -1,0 +1,11 @@
+[api]
+  insecure = true
+
+[providers]
+  docker = {}
+
+[entryPoints]
+  [entryPoints.web]
+    address = ":80"
+  [entryPoints.grpc]
+    address = ":50051"

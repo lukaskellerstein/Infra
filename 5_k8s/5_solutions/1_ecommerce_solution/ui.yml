@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ui
+  namespace: ecommerce
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ui
+  template:
+    metadata:
+      labels:
+        app: ui
+    spec:
+      containers:
+        - name: ui
+          image: lukaskellerstein/ecomm-ui:0.0.4
+          env:
+            - name: URL_ROOT_PATH
+              value: "/ecommerce"
+            - name: PORT
+              value: "5000"
+            - name: PRODUCT_SERVICE_URL
+              value: "product-service:50051"
+            - name: ORDER_SERVICE_URL
+              value: "order-service:50052"
+          ports:
+            - containerPort: 5000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ui
+  namespace: ecommerce
+spec:
+  selector:
+    app: ui
+  ports:
+    - port: 5000
+      targetPort: 5000
+---
+# ------------------------------
+# Traefik configuration
+# ------------------------------
+# apiVersion: traefik.io/v1alpha1
+# kind: Middleware
+# metadata:
+#   name: strip-ecommerce-prefix
+#   namespace: ecommerce
+# spec:
+#   stripPrefix:
+#     prefixes:
+#       - /ecommerce
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: ecommerce-ui-ingressroute
+  namespace: ecommerce
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: PathPrefix(`/ecommerce`)
+      kind: Rule
+      services:
+        - name: ui
+          port: 5000
+      # middlewares:
+      #   - name: strip-ecommerce-prefix
+      #     namespace: ecommerce

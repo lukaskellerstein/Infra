@@ -1,0 +1,73 @@
+version: "3.8"
+
+services:
+  traefik:
+    image: traefik:v2.9
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.grpc.address=:50051"
+    ports:
+      - "80:80"
+      - "8080:8080"
+      - "50051:50051"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  mongodb:
+    image: mongo:latest
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+  product-service:
+    image: lukaskellerstein/ecomm-product-svc:0.0.1
+    # build: ./product-service
+    depends_on:
+      - mongodb
+      - traefik
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.product.rule=Host(`product.localhost`)"
+      - "traefik.http.routers.product.entrypoints=web"
+      - "traefik.http.services.product.loadbalancer.server.port=50051"
+
+  order-service:
+    image: lukaskellerstein/ecomm-order-svc:0.0.1
+    # build: ./order-service
+    depends_on:
+      - mongodb
+      - traefik
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.order.rule=Host(`order.localhost`)"
+      - "traefik.http.routers.order.entrypoints=web"
+      - "traefik.http.services.order.loadbalancer.server.port=50052"
+
+  ui:
+    image: lukaskellerstein/ecomm-ui:0.0.1
+    # build: ./ui
+    environment:
+      - URL_ROOT_PATH=/
+      - PORT=5000
+      - PRODUCT_SERVICE_URL=product-service:50051
+      - ORDER_SERVICE_URL=order-service:50052
+    depends_on:
+      - product-service
+    ports:
+      - "5000:5000"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.ui.rule=Host(`ui.localhost`)"
+      - "traefik.http.routers.ui.entrypoints=web"
+      - "traefik.http.services.ui.loadbalancer.server.port=5000"
+
+volumes:
+  mongodb_data:

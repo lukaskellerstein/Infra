@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: car-app
+  namespace: car
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: car-app
+  template:
+    metadata:
+      labels:
+        app: car-app
+    spec:
+      containers:
+        - name: car-app
+          image: lukaskellerstein/car-app:0.0.1
+          env:
+            - name: API_URL
+              value: "car-api"
+            - name: API_PORT
+              value: "8000"
