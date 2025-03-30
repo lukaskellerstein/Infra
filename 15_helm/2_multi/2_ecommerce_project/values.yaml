@@ -1,0 +1,20 @@
+namespace: ecommerce
+
+mongodb:
+  image: mongo:latest
+  port: 27017
+
+orderService:
+  image: lukaskellerstein/ecomm-order-svc:0.0.1
+  port: 50052
+
+productService:
+  image: lukaskellerstein/ecomm-product-svc:0.0.1
+  port: 50051
+
+ui:
+  image: lukaskellerstein/ecomm-ui:0.0.4
+  port: 5000
+  rootPath: "/ecommerce"
+  productServiceUrl: "product-service:50051"
+  orderServiceUrl: "order-service:50052"

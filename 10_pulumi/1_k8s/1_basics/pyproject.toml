@@ -1,0 +1,10 @@
+[project]
+name = "0-basics"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "pulumi>=3.159.0",
+    "pulumi-kubernetes>=4.22.1",
+]
