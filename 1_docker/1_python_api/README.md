@@ -15,19 +15,31 @@ uv run -m server
 Build
 
 ```bash
-docker build -t my_python_api_1 .
+docker build -t my_python_api:0.0.1 .
 ```
 
 Build without cache
 
 ```bash
-docker build --no-cache --progress=plain -t my_python_api_1 .
+docker build --no-cache --progress=plain -t my_python_api:0.0.1 .
 ```
 
 Run
 
 ```bash
-docker run --name my-python-api-1 -p 8000:8000 my_python_api_1:latest
+docker run --name my-python-api -p 8000:8000 my_python_api:0.0.1
+```
+
+Tag
+
+```bash
+docker tag my_python_api:0.0.1 lukaskellerstein/my_python_api:0.0.1
+```
+
+Push
+
+```bash
+docker push lukaskellerstein/my_python_api:0.0.1
 ```
 
 # Test
