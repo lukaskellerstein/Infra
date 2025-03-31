@@ -3,6 +3,9 @@
 > USE CUSTOM `traefik` namespace !!!!
 > USE `INGRESS ROUTE` crd
 
+Install Traefik custom CRDs via:
+https://doc.traefik.io/traefik/providers/kubernetes-crd/
+
 # Deploy
 
 ## Traefik
