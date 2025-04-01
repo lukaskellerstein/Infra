@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: windows-nginx-conf
+  namespace: default
+data:
+  default.conf: |
+    server {
+      listen 80;
+
+      location / {
+        proxy_pass http://localhost:8006;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+
+        sub_filter_once off;
+        sub_filter 'href="/' 'href="/windows/';
+        sub_filter 'src="/' 'src="/windows/';
+        sub_filter 'action="/' 'action="/windows/';
+        sub_filter 'location.replace("/' 'location.replace("/windows/';
+      }
+
+      location /websockify {
+        proxy_pass http://localhost:8006;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+      }
+    }

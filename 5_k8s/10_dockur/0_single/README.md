@@ -1,4 +1,4 @@
-# VM
+# AKS
 
 The k8s nodes needs to support `nested virtualization`.
 
@@ -9,3 +9,11 @@ https://learn.microsoft.com/en-us/azure/virtual-machines/sizes/general-purpose/d
 
 Dsv3
 https://learn.microsoft.com/en-us/azure/virtual-machines/sizes/general-purpose/dsv3-series?tabs=sizebasic
+
+# Access
+
+## Minikube
+
+```bash
+minikube service windows
+```
