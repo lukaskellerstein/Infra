@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vnc-ui
+  labels:
+    app: vnc-ui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vnc-ui
+  template:
+    metadata:
+      labels:
+        app: vnc-ui
+    spec:
+      containers:
+        - name: vnc-ui
+          image: lukaskellerstein/vnc-react-ui:0.0.11
+          ports:
+            - containerPort: 80
+          env:
+            - name: BASE_PATH
+              value: "/ui"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vnc-ui
+  labels:
+    app: vnc-ui
+spec:
+  selector:
+    app: vnc-ui
+  ports:
+    - port: 3100
+      targetPort: 80
+      protocol: TCP
+  type: ClusterIP
+---
+# ------------------------------
+# Traefik configuration
+# ------------------------------
+# apiVersion: traefik.io/v1alpha1
+# kind: Middleware
+# metadata:
+#   name: strip-ui-prefix
+# spec:
+#   stripPrefix:
+#     prefixes:
+#       - /ui
+# ---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: vnc-ui-ingressroute
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: PathPrefix(`/ui`)
+      kind: Rule
+      services:
+        - name: vnc-ui
+          port: 3100
+      # middlewares:
+      #   - name: strip-ui-prefix

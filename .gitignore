@@ -4,6 +4,8 @@ app.log
 
 node_modules
 
+**/vnc_solution/qemu*
+
 # Terraform specific files --
 
 # Local .terraform directory

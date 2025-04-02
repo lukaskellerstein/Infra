@@ -1,0 +1,64 @@
+version: '3'
+services:
+  qemu1:
+    image: qemux/qemu
+    container_name: qemu1
+    environment:
+      BOOT: "ubuntu"
+      QEMU_ARGS: "-vnc 0.0.0.0:0"  # listens on port 5900 inside container
+    devices:
+      - /dev/net/tun
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - "5900:5900"  # expose on host port 5900
+    volumes:
+      - ./qemu1:/storage
+    restart: always
+
+  qemu2:
+    image: qemux/qemu
+    container_name: qemu2
+    environment:
+      BOOT: "fedora"
+      QEMU_ARGS: "-vnc 0.0.0.0:0"  # also listens on port 5900 inside container
+    devices:
+      - /dev/net/tun
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - "5901:5900"  # expose container port 5900 as host port 5901
+    volumes:
+      - ./qemu2:/storage
+    restart: always
+
+  websockify1:
+    image: lukaskellerstein/websockify:0.0.1
+    container_name: websockify1
+    depends_on:
+      - qemu1
+    ports:
+      - "7100:80"
+    command: "80 qemu1:5900"
+    restart: always
+
+  websockify2:
+    image: lukaskellerstein/websockify:0.0.1
+    container_name: websockify2
+    depends_on:
+      - qemu2
+    ports:
+      - "7101:80"
+    command: "80 qemu2:5900"
+    restart: always
+
+  ui:
+    container_name: vnc-ui
+    image: lukaskellerstein/vnc-react-ui:0.0.12
+    # build:
+    #   context: ./react-novnc-ts
+    #   dockerfile: Dockerfile
+    ports:
+      - "3100:80"  
+    environment:
+      MY_BASE_URL: "/ddd"  

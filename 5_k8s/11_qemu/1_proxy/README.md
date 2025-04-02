@@ -1,9 +1,3 @@
-# STATUS
-
-> DOES NOT WORK !!!!!
-
-Because onVNC cannot be used on the path routes "/vm" !!!
-
 # Deploy
 
 Traefik
@@ -20,7 +14,14 @@ kubectl apply -f all.yaml
 
 # Access
 
-## Minikube
+## Minikube 1
+
+```bash
+minikube service traefik-web-service --namespace traefik
+minikube service traefik-dashboard-service --namespace traefik
+```
+
+## Minikube 2
 
 1. Change /etc/hosts (on Windows !! not in wsl2)
 
