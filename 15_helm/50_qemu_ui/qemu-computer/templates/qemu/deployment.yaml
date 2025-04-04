@@ -19,10 +19,10 @@ spec:
             - name: BOOT
               value: "{{ .Values.qemu.boot }}"
             # AKS  
-            # - name: KVM
-            #   value: "N"
-            # - name: USER_PORTS
-            #   value: "Y"
+            - name: KVM
+              value: "N"
+            - name: USER_PORTS
+              value: "Y"
           
           volumeMounts:
             - name: storage
@@ -30,8 +30,8 @@ spec:
             - name: dev-tun
               mountPath: /dev/net/tun
             # AKS 
-            # - name: dev-kvm
-            #   mountPath: /dev/kvm
+            - name: dev-kvm
+              mountPath: /dev/kvm
 
           securityContext:
             privileged: true
@@ -53,8 +53,8 @@ spec:
             path: /dev/net/tun
             type: CharDevice
         # AKS 
-        # - name: dev-kvm
-        #   hostPath:
-        #     path: /dev/kvm
-        #     type: CharDevice
+        - name: dev-kvm
+          hostPath:
+            path: /dev/kvm
+            type: CharDevice
         

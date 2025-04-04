@@ -10,9 +10,9 @@ qemu:
 
 vnc_ws_proxy:
   # Minikube
-  image: lukaskellerstein/vnc-ws-proxy:0.0.6
+  # image: lukaskellerstein/vnc-ws-proxy:0.0.6
   # AKS
-  # image: lukaskellerstein/vnc-ws-proxy:0.0.7
+  image: lukaskellerstein/vnc-ws-proxy:0.0.7
 
   listen_host: "0.0.0.0"
   listen_port: 7500

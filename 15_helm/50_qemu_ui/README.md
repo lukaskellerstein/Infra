@@ -1,40 +1,18 @@
 # TEST
 
-## Test from outside of the cluster (via Traefik proxy)
-
 Minikube proxy
 
 ```bash
 minikube service traefik-service
 ```
 
-```bash
-# VNC test
-nc <TRAEFIK-WEB-SERVICE-IP> <TRAEFIK-WEB-SERVICE-PORT>      <---- ???
-# Websocket test
-npx wscat -c ws://<TRAEFIK-WEB-SERVICE-URL>/my-ws           <---- ???
-# HTTP test
-curl http://<TRAEFIK-WEB-SERVICE-URL>/my-http               <---- WORKS
-```
+AKS
 
-## Test from inside of the cluster (outside a pod)
+Open EXTERNAL-IP via `http://proxy.20.3.4.110.nip.io`
 
-Connect to the `Debug container`
-
-```bash
-kubectl exec -it debugbox -- bash
-```
-
-```bash
-# Websocket test
-npx wscat -c ws://<VNC-WS-PROXY-POD-IP>:7500    <---- WORKS
-
-# HTTP test
-curl http://<HTTP-SERVER-POD-IP>:7600           <---- WORKS
-
-# VNC test
-nc <QEMU-POD-IP> 5900                           <---- WORKS
-```
+Dashboard: `http://proxy.20.3.4.110.nip.io:8080/`
+UI: `http://proxy.20.3.4.110.nip.io/ui`
+Add qemu1 `ws://proxy.20.3.4.110.nip.io:7777/qemu1`
 
 # Deployments
 
@@ -56,16 +34,6 @@ helm upgrade --install ui-release ./ui
 
 ```bash
 helm uninstall ui-release
-```
-
-## VNC-WS Proxy
-
-```bash
-helm upgrade --install custom-proxy-release ./vnc-ws-proxy
-```
-
-```bash
-helm uninstall custom-proxy-release
 ```
 
 ## Qemu1
