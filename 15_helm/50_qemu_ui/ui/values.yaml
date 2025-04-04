@@ -1,0 +1,10 @@
+name: oo-admin-ui
+replicas: 1
+
+route: /ui
+
+
+image: lukaskellerstein/oo-admin-ui
+tag: 0.0.4
+
+port: 4001

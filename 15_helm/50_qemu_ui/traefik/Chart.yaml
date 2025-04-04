@@ -1,0 +1,4 @@
+apiVersion: v2
+name: my-traefik
+description: Helm subchart for deploying Traefik
+version: 0.1.0

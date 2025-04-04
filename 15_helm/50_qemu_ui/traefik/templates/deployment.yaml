@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: traefik-deployment
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: traefik
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: traefik
+  template:
+    metadata:
+      labels:
+        app: traefik
+    spec:
+      serviceAccountName: admin-traefik-account
+      # nodeSelector:
+      #   agentpool: {{ .Values.nodepool }}
+      containers:
+        - name: traefik
+          image: {{ .Values.image }}
+          args:
+            - --log.level=DEBUG
+            - --accesslog
+            - --api.insecure
+            - --entrypoints.web.address=:80
+            - --entrypoints.websecure.address=:443
+            - --entrypoints.ws.address=:7777
+            - --providers.kubernetesingress
+            - --providers.kubernetesCRD.namespaces=
+            - --providers.kubernetesIngress.namespaces=
+            # - --certificatesresolvers.myresolver.acme.email={{ .Values.acme.email }}
+            # - --certificatesresolvers.myresolver.acme.storage={{ .Values.acme.storage }}
+            # - --certificatesresolvers.myresolver.acme.tlschallenge=true
+          ports:
+            - name: web
+              containerPort: 80
+            - name: dashboard
+              containerPort: 8080
+            # - name: websecure
+            #   containerPort: 443
+            - name: ws
+              containerPort: 7777
+          volumeMounts:
+            - name: acme-storage
+              mountPath: /data
+              readOnly: false
+      volumes:
+        - name: acme-storage
+          persistentVolumeClaim:
+            claimName: traefik-acme-pvc

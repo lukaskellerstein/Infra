@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.computerName }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.computerName }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.computerName }}
+    spec:
+      containers:
+        - name: "{{ .Values.computerName }}-container"
+          image: {{ .Values.qemu.image }}
+          env:
+            - name: BOOT
+              value: "{{ .Values.qemu.boot }}"
+            # AKS  
+            # - name: KVM
+            #   value: "N"
+            # - name: USER_PORTS
+            #   value: "Y"
+          
+          volumeMounts:
+            - name: storage
+              mountPath: /storage
+            - name: dev-tun
+              mountPath: /dev/net/tun
+            # AKS 
+            # - name: dev-kvm
+            #   mountPath: /dev/kvm
+
+          securityContext:
+            privileged: true
+            capabilities:
+              add: ["NET_ADMIN"]
+
+          # Optional
+          ports:
+            - name: vnc
+              protocol: TCP
+              containerPort: {{ .Values.qemu.vnc_port }}
+
+      volumes:
+        - name: storage
+          persistentVolumeClaim:
+            claimName: "{{ .Values.computerName }}-pvc"
+        - name: dev-tun
+          hostPath:
+            path: /dev/net/tun
+            type: CharDevice
+        # AKS 
+        # - name: dev-kvm
+        #   hostPath:
+        #     path: /dev/kvm
+        #     type: CharDevice
+        

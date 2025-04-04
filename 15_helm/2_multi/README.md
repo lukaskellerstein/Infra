@@ -26,7 +26,7 @@ via `http://<EXTERNAL-IP>/echo`
 via `http://<EXTERNAL-IP>/cars`
 via `http://<EXTERNAL-IP>/ecommerce`
 
-## ACR
+## AKS
 
 ```bash
 kubectl get svc traefik-web-service

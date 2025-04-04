@@ -1,0 +1,7 @@
+namespace: default
+image: traefik:v3.3
+replicas: 1
+
+acme:
+  email: lukas.kellerstein@gmail.com
+  storage: /data/acme.json

@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-server
+  template:
+    metadata:
+      labels:
+        app: my-server
+    spec:
+      containers:
+        - name: my-http-server-container
+          image: lukaskellerstein/simple-http-server:0.0.1
+          env:
+            - name: PORT
+              value: "8080"
+          # Optional: used for documentation, health probes, or when using tools like `kubectl expose`
+          # Do not affect the container's behavior
+          # ports:
+          #   - containerPort: 8080  
+        - name: my-ws-server-container
+          image: lukaskellerstein/simple-ws-server:0.0.1
+          env:
+            - name: PORT
+              value: "7070"
+          # Optional: used for documentation, health probes, or when using tools like `kubectl expose`
+          # Do not affect the container's behavior
+          # ports:
+          #   - containerPort: 7070   
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-server
+spec:
+  type: ClusterIP # Default. Exposes the service on a cluster-internal IP only.
+  selector:
+    app: my-server
+  ports:
+    - name: http
+      protocol: TCP
+      port: 8001 # This is the port on the service
+      targetPort: 8080  # This is the port on the container
+    - name: ws
+      protocol: TCP
+      port: 8002 # This is the port on the service
+      targetPort: 7070  # This is the port on the container
