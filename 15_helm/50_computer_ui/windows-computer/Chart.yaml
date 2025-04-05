@@ -1,0 +1,5 @@
+apiVersion: v2
+name: windows-computer
+description: Helm chart to deploy Dockur instance with custom VNC-WS proxy
+version: 0.1.0
+

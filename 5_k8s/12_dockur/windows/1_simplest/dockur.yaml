@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: windows1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: windows1
+  template:
+    metadata:
+      labels:
+        app: windows1
+    spec:
+      containers:
+
+        - name: windows
+          image: dockurr/windows
+          env:
+          - name: VERSION
+            value: "11"
+          - name: DISK_SIZE
+            value: "64G"
+          volumeMounts:
+            - name: storage
+              mountPath: /storage
+            - name: dev-tun
+              mountPath: /dev/net/tun
+            # AKS (or Windows)
+            - name: dev-kvm
+              mountPath: /dev/kvm
+          
+          securityContext:
+            privileged: true
+            capabilities:
+              add: ["NET_ADMIN"]
+          # Optional
+          # ports:
+          # - containerPort: 5900
+          #   name: vnc
+          #   protocol: TCP
+
+      volumes:
+        - name: storage
+          persistentVolumeClaim:
+            claimName: windows1-pvc
+        - name: dev-tun
+          hostPath:
+            path: /dev/net/tun
+            type: CharDevice
+        # AKS (or Windows)
+        - name: dev-kvm
+          hostPath:
+            path: /dev/kvm
+        
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: windows1
+spec:
+  type: LoadBalancer
+  selector:
+    app: windows1
+  ports:
+    - name: vnc
+      port: 5900
+      protocol: TCP
+      targetPort: 5900
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: windows1-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 64Gi

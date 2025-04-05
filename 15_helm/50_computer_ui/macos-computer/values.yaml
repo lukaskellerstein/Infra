@@ -1,0 +1,19 @@
+replicaCount: 1
+
+computerName: macos1
+
+dockur:
+  image: dockurr/macos
+  vnc_port: 5900
+  version: 15 # MacOS version
+  storageSize: 65Gi
+
+vnc_ws_proxy:
+  # Minikube
+  image: lukaskellerstein/vnc-ws-proxy:0.0.6
+  # AKS
+  # image: lukaskellerstein/vnc-ws-proxy:0.0.7
+
+  listen_host: "0.0.0.0"
+  listen_port: 7500
+  vnc_port: 5900

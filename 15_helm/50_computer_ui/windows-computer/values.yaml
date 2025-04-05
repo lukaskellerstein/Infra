@@ -1,0 +1,19 @@
+replicaCount: 1
+
+computerName: windows1
+
+dockur:
+  image: dockurr/windows
+  vnc_port: 5900
+  version: 11 # Windows version
+  storageSize: 65Gi
+
+vnc_ws_proxy:
+  # Minikube
+  image: lukaskellerstein/vnc-ws-proxy:0.0.6
+  # AKS
+  # image: lukaskellerstein/vnc-ws-proxy:0.0.7
+
+  listen_host: "0.0.0.0"
+  listen_port: 7500
+  vnc_port: 5900

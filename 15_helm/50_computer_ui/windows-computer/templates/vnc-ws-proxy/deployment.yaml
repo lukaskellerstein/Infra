@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "proxy.name" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "proxy.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "proxy.name" . }}
+    spec:
+      containers:
+        - name: '{{ include "proxy.name" . }}-container'
+          image: {{ .Values.vnc_ws_proxy.image }}
+          env:
+            - name: LISTEN_HOST
+              value: "{{ .Values.vnc_ws_proxy.listen_host }}"
+            - name: LISTEN_PORT
+              value: "{{ .Values.vnc_ws_proxy.listen_port }}"
+            - name: VNC_HOST
+              value: {{ include "proxy.vnc_host" . }}
+            - name: VNC_PORT
+              value: "{{ .Values.vnc_ws_proxy.vnc_port }}"
+          ports:
+            - containerPort: {{ .Values.vnc_ws_proxy.listen_port }}
+
+        

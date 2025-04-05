@@ -1,0 +1,15 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: '{{ include "proxy.name" . }}-ingressroute'
+spec:
+  entryPoints:
+    - ws
+  routes:
+    - match: PathPrefix(`{{ include "proxy.route" . }}`)
+      kind: Rule
+      services:
+        - name: {{ include "proxy.name" . }}
+          port: {{ .Values.vnc_ws_proxy.listen_port }}
+
+
