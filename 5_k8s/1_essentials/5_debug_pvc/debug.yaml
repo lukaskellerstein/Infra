@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pvc-inspector
+  namespace: computer
+spec:
+  containers:
+  - name: inspector
+    image: lukaskellerstein/debug-container-pvc:0.0.1
+    command: ["/bin/bash", "-c", "sleep infinity"]
+    volumeMounts:
+    - name: target-pvc
+      mountPath: /mnt/pvc
+      readOnly: false
+    securityContext:
+      readOnlyRootFilesystem: false
+  volumes:
+  - name: target-pvc
+    persistentVolumeClaim:
+      claimName: qemu1-pvc
