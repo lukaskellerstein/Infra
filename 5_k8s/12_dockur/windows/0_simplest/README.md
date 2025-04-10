@@ -26,6 +26,10 @@ kubectl exec -it debugbox -- bash
 nc <POD-IP> 5900            <------ WORKS
 # ex. nc 10.244.0.134 5900
 
+# RDP test
+nc -zv <POD-IP> 3389
+# ex. nc -zv 10.244.0.134 3389
+
 # HTTP test
 curl <POD-IP>:8006          <------ WORKS
 # curl 10.244.0.134:8006
