@@ -17,6 +17,7 @@ node_modules
 **/*.tfplan
 **/*.tfapply
 **/.terraform.tfstate.lock.info
+**/.terraform.lock.hcl
 
 # Crash logs
 **/crash.log

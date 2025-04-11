@@ -11,19 +11,6 @@ provider "azurerm" {
   features {}
 }
 
-# Variables for customizing resource names and location
-variable "resource_group_name" {
-  description = "The name of the resource group for the container app."
-  type        = string
-  default     = "my-resource-group"
-}
-
-variable "location" {
-  description = "Azure location for the deployment."
-  type        = string
-  default     = "East US"
-}
-
 # Use existing resource group
 data "azurerm_resource_group" "existing" {
   name = var.resource_group_name
